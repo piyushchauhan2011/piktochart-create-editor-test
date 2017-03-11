@@ -75,7 +75,9 @@ app.get( '/state', ( req, res ) => {
 });
 app.post( '/state', ( req, res ) => {
   const data = req.body;
-  fs.writeFile('state.json', JSON.stringify(data));
+  fs.writeFile('state.json', JSON.stringify(data), (err) => {
+    console.log(err);
+  });
   res.status(200).json(data);
 });
 app.get( '/test', ( req, res ) => {
