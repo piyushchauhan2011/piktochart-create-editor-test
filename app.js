@@ -153,9 +153,10 @@ function createClosableDiv(el) {
   cbutton.style.border = '1px solid rgb(250, 250, 250)';
   cbutton.style.textAlign = 'center';
   cbutton.style.padding = '0.25em 1em';
-  cbutton.style.background = '#767676';
-  cbutton.style.color = '#fafafa';
+  cbutton.style.background = '#fafafa';
+  cbutton.style.color = '#a94442';
   cbutton.style.cursor = 'pointer';
+  cbutton.style.borderRadius = '50%';
 
   cbutton.addEventListener('click', function () {
     blockEl.removeChild(cspan);
