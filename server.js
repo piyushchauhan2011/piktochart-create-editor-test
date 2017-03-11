@@ -67,11 +67,14 @@ app.get( '/images', ( req, res ) => {
 // general route
 app.get( '/', ( req, res ) => {
   res.sendFile( __dirname + '/index.html' );
-})
+});
+app.get( '/state', ( req, res ) => {
+  res.sendFile( __dirname + '/state.json' );
+});
 app.get( '/test', ( req, res ) => {
   res.sendFile( __dirname + '/test.html' );
-})
+});
 
 var server = app.listen( 8000, _ => {
   console.log( 'server started. listening to 8000' );
-})
+});

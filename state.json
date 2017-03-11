@@ -1,0 +1,18 @@
+{
+  "canvas": {
+    "elements": [
+      {
+        "type": "image",
+        "value": "http://localhost:8000/images/uploads-1462948459604.png",
+        "x": 215,
+        "y": 130
+      },
+      {
+        "type": "text",
+        "value": "Hello World!",
+        "x": 23,
+        "y": 99
+      }
+    ]
+  }
+}

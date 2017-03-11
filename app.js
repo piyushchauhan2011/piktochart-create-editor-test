@@ -1,6 +1,15 @@
 'use strict';
 
 var utils = {
+  createTxt: function(txt) {
+    var txtEl = document.createElement('span');
+    txtEl.style.display = 'inline-block';
+    txtEl.style.paddingRight = '3em';
+    txtEl.style.paddingTop = '0.25em';
+    txtEl.innerText = txt;
+    return txtEl;
+  },
+
   createImg: function (src) {
     var img = document.createElement('img');
     img.src = src;
@@ -56,9 +65,16 @@ var utils = {
     return cspan;
   },
 
-  createInteractDiv: function (el) {
+  createInteractDiv: function (el, x, y) {
     var closableDiv = utils.createClosableDiv(el);
     closableDiv.style.position = 'absolute';
+
+    if (x) { closableDiv.dataset.x = x; }
+    if (y) { closableDiv.dataset.y = y; }
+
+    if (x && y) {
+      closableDiv.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    }
 
     // utils.makeDraggable(closableDiv);
 
@@ -153,6 +169,31 @@ var app = {
     app.addText.addEventListener('click', app.addTextFn);
     app.imgUpload.addEventListener('click', app.imgUploadFn);
     app.refreshImgs();
+
+    // restore state
+    unfetch('/state', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (r) {
+      return r.json();
+    }).then(function(data) {
+      var canvas = data.canvas;
+      canvas.elements.forEach(function(el) {
+        if (el.type === 'image') {
+          // create image node
+          var img = utils.createImg(el.value);
+          var idiv = utils.createInteractDiv(img, el.x, el.y);
+          app.blockEl.appendChild(idiv);
+        } else if (el.type === 'text') {
+          // create text node
+          var txt = utils.createTxt(el.value);
+          var idiv = utils.createInteractDiv(txt, el.x, el.y);
+          app.blockEl.appendChild(idiv);
+        }
+      });
+    });
   },
 
   imgUploadFn: function (e) {
@@ -181,11 +222,7 @@ var app = {
   addTextFn: function (e) {
     var txt = prompt('Please enter text');
     if (txt !== null && txt !== '') {
-      var txtEl = document.createElement('span');
-      txtEl.style.display = 'inline-block';
-      txtEl.style.paddingRight = '3em';
-      txtEl.style.paddingTop = '0.25em';
-      txtEl.innerText = txt;
+      var textEl = utils.createTxt(txt);
       var idiv = utils.createInteractDiv(txtEl);
       app.blockEl.appendChild(idiv);
     }
