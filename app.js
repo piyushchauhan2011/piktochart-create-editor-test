@@ -150,16 +150,32 @@ function createClosableDiv(el) {
   cbutton.style.position = 'absolute';
   cbutton.style.top = '0';
   cbutton.style.right = '0';
-  cbutton.style.border = '1px solid rgb(250, 250, 250)';
+  // cbutton.style.border = '1px solid rgb(250, 250, 250)';
   cbutton.style.textAlign = 'center';
   cbutton.style.padding = '0.25em 1em';
-  cbutton.style.background = '#fafafa';
-  cbutton.style.color = '#a94442';
+  cbutton.style.background = 'rgb(250,250,250)';
+  cbutton.style.color = '#aaa';
   cbutton.style.cursor = 'pointer';
   cbutton.style.borderRadius = '50%';
+  cbutton.style.display = 'none';
 
-  cbutton.addEventListener('click', function () {
+  cbutton.addEventListener('mouseover', function(e) {
+    cbutton.style.display = 'block';
+    cbutton.style.color = '#a91772';
+  });
+
+  cbutton.addEventListener('mouseout', function(e) {
+    cbutton.style.color = '#aaa';
+  });
+  cbutton.addEventListener('click', function (e) {
     blockEl.removeChild(cspan);
+  });
+
+  el.addEventListener('mouseover', function(e) {
+    cbutton.style.display = 'block';
+  });
+  el.addEventListener('mouseout', function(e) {
+    cbutton.style.display = 'none';
   });
 
   cspan.appendChild(cbutton);
