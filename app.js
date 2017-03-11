@@ -1,9 +1,29 @@
-// <li><img src="images/sample.jpeg" class="img-rounded" /></li>
+function dragMoveListener(event) {
+  var target = event.target,
+    // keep the dragged position in the data-x/data-y attributes
+    x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+    y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+  // translate the element
+  target.style.webkitTransform =
+    target.style.transform =
+    'translate(' + x + 'px, ' + y + 'px)';
+
+  // update the posiion attributes
+  target.setAttribute('data-x', x);
+  target.setAttribute('data-y', y);
+}
+
+// this is used later in the resizing and gesture demos
+window.dragMoveListener = dragMoveListener;
+
+// Start here
 
 var allImages = document.getElementById('allImages');
 var fileInput = document.getElementsByName('upload')[0];
 var imageUpload = document.getElementById('submit');
 var blockEl = document.getElementsByClassName('block')[0];
+var addText = document.getElementById('addText');
 
 imageUpload.addEventListener('click', function (e) {
   var formData = new FormData();
@@ -56,24 +76,54 @@ function renderImage(image) {
   img.classList.add('img-rounded');
 
   img.addEventListener('click', function (e) {
-    // var blockImgEl = createImage(e.target.src);
-    var blockImgEl = createClosableImgDiv(e.target.src);
-    blockImgEl.style.position = 'relative';
-    // blockImgEl.style.boxShadow = '0 0 5px #cacaca';
-    // blockImgEl.style.padding = '1em';
-    // blockImgEl.style.background = '#fafafa';
-
-    // targ.style.left = coordX + e.clientX - offsetX + 'px';
-    // targ.style.top = coordY + e.clientY - offsetY + 'px';
-
-    blockEl.appendChild(blockImgEl);
+    var img = createImage(e.target.src);
+    var idiv = interactableDiv(img);
+    blockEl.appendChild(idiv);
   });
 
   li.appendChild(img);
   allImages.appendChild(li);
 }
 
-function createClosableImgDiv(image) {
+function interactableDiv(el) {
+  var closableDiv = createClosableDiv(el);
+  closableDiv.style.position = 'absolute';
+
+  // target elements with the "draggable" class
+  interact(closableDiv)
+    .draggable({
+      // enable inertial throwing
+      inertia: false,
+      // keep the element within the area of it's parent
+      restrict: {
+        restriction: 'parent',
+        endOnly: true,
+        elementRect: {
+          top: 0,
+          left: 0,
+          bottom: 1,
+          right: 1
+        }
+      },
+      // enable autoScroll
+      autoScroll: true,
+
+      // call this function on every dragmove event
+      onmove: dragMoveListener,
+      // call this function on every dragend event
+      onend: function (event) {}
+    });
+  // blockImgEl.style.boxShadow = '0 0 5px #cacaca';
+  // blockImgEl.style.padding = '1em';
+  // blockImgEl.style.background = '#fafafa';
+
+  // targ.style.left = coordX + e.clientX - offsetX + 'px';
+  // targ.style.top = coordY + e.clientY - offsetY + 'px';
+
+  return closableDiv;
+}
+
+function createClosableDiv(el) {
   var cspan = document.createElement('div');
   cspan.style.display = 'inline-block';
 
@@ -89,14 +139,12 @@ function createClosableImgDiv(image) {
   cbutton.style.color = '#fafafa';
   cbutton.style.cursor = 'pointer';
 
-  cbutton.addEventListener('click', function() {
+  cbutton.addEventListener('click', function () {
     blockEl.removeChild(cspan);
   });
 
-  var img = createImage(image);
-
   cspan.appendChild(cbutton);
-  cspan.appendChild(img);
+  cspan.appendChild(el);
 
   return cspan;
 }
@@ -106,5 +154,18 @@ function createImage(image) {
   img.src = image;
   return img;
 }
+
+addText.addEventListener('click', function (e) {
+  var txt = prompt('Please enter text');
+  if (txt !== null && txt !== '') {
+    var txtEl = document.createElement('span');
+    txtEl.style.display = 'inline-block';
+    txtEl.style.paddingRight = '3em';
+    txtEl.style.paddingTop = '0.25em';
+    txtEl.innerText = txt;
+    var idiv = interactableDiv(txtEl);
+    blockEl.appendChild(idiv);
+  }
+});
 
 refreshImages();
