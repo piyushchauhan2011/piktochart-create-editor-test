@@ -24,6 +24,19 @@ var fileInput = document.getElementsByName('upload')[0];
 var imageUpload = document.getElementById('submit');
 var blockEl = document.getElementsByClassName('block')[0];
 var addText = document.getElementById('addText');
+var exportEl = document.getElementById('export');
+
+exportEl.addEventListener('click', function(e) {
+  // html2canvas(blockEl, {
+  //   onrendered: function(canvas) {
+  //     document.body.appendChild(canvas);
+  //   }
+  // });
+  
+  // Add the export logic
+  // Export the html in a state format ?
+  // Reload the state and add event listeners
+});
 
 addText.addEventListener('click', function (e) {
   var txt = prompt('Please enter text');
