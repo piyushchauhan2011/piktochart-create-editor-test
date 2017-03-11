@@ -25,6 +25,19 @@ var imageUpload = document.getElementById('submit');
 var blockEl = document.getElementsByClassName('block')[0];
 var addText = document.getElementById('addText');
 
+addText.addEventListener('click', function (e) {
+  var txt = prompt('Please enter text');
+  if (txt !== null && txt !== '') {
+    var txtEl = document.createElement('span');
+    txtEl.style.display = 'inline-block';
+    txtEl.style.paddingRight = '3em';
+    txtEl.style.paddingTop = '0.25em';
+    txtEl.innerText = txt;
+    var idiv = interactableDiv(txtEl);
+    blockEl.appendChild(idiv);
+  }
+});
+
 imageUpload.addEventListener('click', function (e) {
   var formData = new FormData();
   var file = fileInput.files[0];
@@ -154,18 +167,5 @@ function createImage(image) {
   img.src = image;
   return img;
 }
-
-addText.addEventListener('click', function (e) {
-  var txt = prompt('Please enter text');
-  if (txt !== null && txt !== '') {
-    var txtEl = document.createElement('span');
-    txtEl.style.display = 'inline-block';
-    txtEl.style.paddingRight = '3em';
-    txtEl.style.paddingTop = '0.25em';
-    txtEl.innerText = txt;
-    var idiv = interactableDiv(txtEl);
-    blockEl.appendChild(idiv);
-  }
-});
 
 refreshImages();
