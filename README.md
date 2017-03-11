@@ -6,14 +6,14 @@ You are required to implement a single page application that allows user to add 
 
 Below are the basic features for the application:
 
-- (done) user can see the existing images from folder `images` to the images list
-- (done) user can *upload image* to folder `images` and directly added to images list
-- (done) user can *add and remove image / text* from the menu to the canvas
-- (done) user can *move the image / text* around the canvas
+- *(done)* user can see the existing images from folder `images` to the images list
+- *(done)* user can *upload image* to folder `images` and directly added to images list
+- *(done)* user can *add and remove image / text* from the menu to the canvas
+- *(done)* user can *move the image / text* around the canvas
 
 Bonus points if you can provide this feature:
 
-- (done) the created objects on canvas can be saved and repopulated on refresh browser
+- *(done)* the created objects on canvas can be saved and repopulated on refresh browser
 
 ## Resources
 
@@ -23,17 +23,17 @@ You will be given a HTML and CSS file with simple structure, and a server that a
 
 Here are the expected requirements:
 
-- (done) App should have the features listed [above](#features)
+- *(done)* App should have the features listed [above](#features)
 
-- (done) App should work on modern browsers (Chrome / Firefox)
+- *(done)* App should work on modern browsers (Chrome / Firefox)
 
-- (not used) App logic and data flow are written in a functional and reactive way
+- *(not used)* App logic and data flow are written in a functional and reactive way
 
     Separate the logic between app state and view / user interactions (unidirectional data flow). 
 
 - Try to avoid using libraries as much as possible
 
-    (not used) If you need to use libraries, we recommend ReactJS, RxJS / xstream, CycleJS, and jQuery.
+    *(not used)* If you need to use libraries, we recommend ReactJS, RxJS / xstream, CycleJS, and jQuery.
 
     _note: use native HTML element `<div>` for editor canvas, not `<canvas>`_
 
@@ -41,9 +41,9 @@ Bonus points given for these requirements:
 
 - Code and flow should be properly documented
 
-    (added) Help us understand your flow easier by code comments or a readme file.
+    *(added)* Help us understand your flow easier by code comments or a readme file.
 
-- (very little) Build automated test for the app
+- *(very little)* Build automated test for the app
 
 
 ## How to Submit
