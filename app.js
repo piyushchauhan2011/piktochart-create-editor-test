@@ -120,30 +120,61 @@ function interactableDiv(el) {
   var closableDiv = createClosableDiv(el);
   closableDiv.style.position = 'absolute';
 
-  var mouseup = Rx.Observable.fromEvent(closableDiv, 'mouseup');
-  var mousemove = Rx.Observable.fromEvent(closableDiv, 'mousemove');
-  var mousedown = Rx.Observable.fromEvent(closableDiv, 'mousedown');
+  // var drag = false;
+  // var mouseup = Rx.Observable.fromEvent(closableDiv, 'mouseup');
+  // var mouseout = Rx.Observable.fromEvent(closableDiv, 'mouseout');
+  // var mousemove = Rx.Observable.fromEvent(closableDiv, 'mousemove');
+  // var mousedown = Rx.Observable.fromEvent(closableDiv, 'mousedown');
 
-  var mousedrag = mousedown.flatMap(function(md) {
-    var startX = md.clientX + window.scrollX,
-      startY = md.clientY + window.scrollY,
-      startLeft = parseInt(closableDiv.style.left, 10) || 0,
-      startTop = parseInt(closableDiv.style.top, 10) || 0;
+  // mouseup.subscribe(function() { drag = false; });
+  // mouseout.subscribe(function() { drag = false; });
+
+  // var mousedrag = mousedown.flatMap(function(md) {
+  //   drag = true;
+  //   var startX = md.clientX + window.scrollX,
+  //     startY = md.clientY + window.scrollY,
+  //     startLeft = parseInt(closableDiv.style.left, 10) || 0,
+  //     startTop = parseInt(closableDiv.style.top, 10) || 0;
     
-    return mousemove.map(function(mm) {
-      mm.preventDefault();
+  //   return mousemove.map(function(mm) {
+  //     mm.preventDefault();
 
-      return {
-        left: startLeft + mm.clientX - startX,
-        top: startTop + mm.clientY - startY
-      };
-    }).takeUntil(mouseup);
-  });
+  //     return {
+  //       left: startLeft + mm.clientX - startX,
+  //       top: startTop + mm.clientY - startY
+  //     };
+  //   }).takeWhile(function() { return drag; });
+  // });
 
-  var subscription = mousedrag.subscribe(function(pos) {
-    closableDiv.style.top = pos.top + 'px';
-    closableDiv.style.left = pos.left + 'px';
-  });
+  // var subscription = mousedrag.subscribe(function(pos) {
+  //   closableDiv.style.top = pos.top + 'px';
+  //   closableDiv.style.left = pos.left + 'px';
+  // });
+
+  // target elements with the "draggable" class
+  interact(closableDiv)
+    .draggable({
+      // enable inertial throwing
+      inertia: false,
+      // keep the element within the area of it's parent
+      restrict: {
+        restriction: 'parent',
+        endOnly: true,
+        elementRect: {
+          top: 0,
+          left: 0,
+          bottom: 1,
+          right: 1
+        }
+      },
+      // enable autoScroll
+      autoScroll: true,
+
+      // call this function on every dragmove event
+      onmove: dragMoveListener,
+      // call this function on every dragend event
+      onend: function (event) {}
+    });
 
   return closableDiv;
 }
