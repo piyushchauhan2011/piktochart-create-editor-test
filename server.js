@@ -68,6 +68,9 @@ app.get( '/images', ( req, res ) => {
 app.get( '/', ( req, res ) => {
   res.sendFile( __dirname + '/index.html' );
 })
+app.get( '/test', ( req, res ) => {
+  res.sendFile( __dirname + '/test.html' );
+})
 
 var server = app.listen( 8000, _ => {
   console.log( 'server started. listening to 8000' );
