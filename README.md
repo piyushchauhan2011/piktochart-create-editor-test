@@ -48,7 +48,7 @@ Bonus points given for these requirements:
 
 ## How to Submit
 
-- Zip your working folder with the name `<your name>-piktojstest`
+- Zip your working folder with the name `piyushchauhan-piktojstest`
 
 - Exclude `node_modules` folder from the zip
 
