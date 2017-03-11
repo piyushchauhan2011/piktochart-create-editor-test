@@ -16,6 +16,13 @@ var utils = {
     return img;
   },
 
+  callbackFn: function(state) {
+    return function(x, y) {
+      state.x = x;
+      state.y = y;
+    }
+  },
+
   createCloseBtn: function (txt) {
     var cbutton = document.createElement('a');
     cbutton.text = txt;
@@ -65,7 +72,7 @@ var utils = {
     return cspan;
   },
 
-  createInteractDiv: function (el, x, y) {
+  createInteractDiv: function (el, cb, x, y) {
     var closableDiv = utils.createClosableDiv(el);
     closableDiv.style.position = 'absolute';
 
@@ -100,7 +107,10 @@ var utils = {
         // call this function on every dragmove event
         onmove: utils.dragMoveListener,
         // call this function on every dragend event
-        onend: function (event) {}
+        onend: function (event) {
+          var dataset = event.target.dataset;
+          cb(dataset.x, dataset.y);
+        }
       });
 
     return closableDiv;
@@ -164,6 +174,12 @@ var app = {
   addText: document.getElementById('addText'),
   exportEl: document.getElementById('export'),
 
+  state: {
+    canvas: {
+      elements: []
+    }
+  },
+
   run: function () {
     app.exportEl.addEventListener('click', app.exportFn);
     app.addText.addEventListener('click', app.addTextFn);
@@ -179,17 +195,19 @@ var app = {
     }).then(function (r) {
       return r.json();
     }).then(function(data) {
+      app.state = data;
       var canvas = data.canvas;
       canvas.elements.forEach(function(el) {
+        var cb = utils.callbackFn(el);
         if (el.type === 'image') {
           // create image node
           var img = utils.createImg(el.value);
-          var idiv = utils.createInteractDiv(img, el.x, el.y);
+          var idiv = utils.createInteractDiv(img, cb, el.x, el.y);
           app.blockEl.appendChild(idiv);
         } else if (el.type === 'text') {
           // create text node
           var txt = utils.createTxt(el.value);
-          var idiv = utils.createInteractDiv(txt, el.x, el.y);
+          var idiv = utils.createInteractDiv(txt, cb, el.x, el.y);
           app.blockEl.appendChild(idiv);
         }
       });
@@ -222,10 +240,34 @@ var app = {
   addTextFn: function (e) {
     var txt = prompt('Please enter text');
     if (txt !== null && txt !== '') {
-      var textEl = utils.createTxt(txt);
-      var idiv = utils.createInteractDiv(txtEl);
+      var elState = {
+        type: "text",
+        value: txt,
+        x: "0",
+        y: "0"
+      };
+
+      var cb = utils.callbackFn(elState);
+      var txtEl = utils.createTxt(txt);
+      var idiv = utils.createInteractDiv(txtEl, cb);
       app.blockEl.appendChild(idiv);
+      app.state.canvas.elements.push(elState);
     }
+  },
+
+  addImgToCanvas: function (e) {
+    var elState = {
+      type: "image",
+      value: e.target.src,
+      x: "0",
+      y: "0"
+    };
+
+    var cb = utils.callbackFn(elState);
+    var img = utils.createImg(e.target.src);
+    var idiv = utils.createInteractDiv(img, cb);
+    app.blockEl.appendChild(idiv);
+    app.state.canvas.elements.push(elState);
   },
 
   refreshImgs: function () {
@@ -266,13 +308,24 @@ var app = {
     allImages.appendChild(li);
   },
 
-  addImgToCanvas: function (e) {
-    var img = utils.createImg(e.target.src);
-    var idiv = utils.createInteractDiv(img);
-    app.blockEl.appendChild(idiv);
-  },
-
   exportFn: function (e) {
+    unfetch('/state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(app.state)
+    }).then(function(r) {
+      if (r.status === 200) {
+        return r.json();
+      } else {
+        return { error: "Error" };
+      }
+    }).then(function(data) {
+      console.log(data);
+      alert('Canvas saved successfully');
+    });
+
     // html2canvas(blockEl, {
     //   onrendered: function(canvas) {
     //     document.body.appendChild(canvas);
@@ -282,6 +335,5 @@ var app = {
     // Add the export logic
     // Export the html in a state format ?
     // Reload the state and add event listeners
-    alert('not implemented');
   }
 };

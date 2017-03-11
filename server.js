@@ -1,12 +1,15 @@
 'use strict'
 
 const express = require( 'express' );
+const bodyParser = require('body-parser');
 const multer = require( 'multer' );
 const fs = require( 'fs' );
 const junk = require( 'junk' );
 let app = express();
 
 app.use( express.static('./') );
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // define file name and destination to save
 let storage = multer.diskStorage({
@@ -47,7 +50,6 @@ app.post( '/uploads', ( req, res ) => {
       console.log( err )
       res.status(400).json( {message: err} );
     } else {
-      // console.log(req);
       res.status(200).json( {
         file: req.protocol + '://' + req.get('host') + '/images/' + req.file.filename
       } )
@@ -70,6 +72,11 @@ app.get( '/', ( req, res ) => {
 });
 app.get( '/state', ( req, res ) => {
   res.sendFile( __dirname + '/state.json' );
+});
+app.post( '/state', ( req, res ) => {
+  const data = req.body;
+  fs.writeFile('state.json', JSON.stringify(data));
+  res.status(200).json(data);
 });
 app.get( '/test', ( req, res ) => {
   res.sendFile( __dirname + '/test.html' );
