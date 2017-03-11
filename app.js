@@ -165,6 +165,7 @@ function createClosableDiv(el) {
   });
 
   cbutton.addEventListener('mouseout', function(e) {
+    cbutton.style.display = 'none';
     cbutton.style.color = '#aaa';
   });
   cbutton.addEventListener('click', function (e) {
