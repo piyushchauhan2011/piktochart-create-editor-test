@@ -21,6 +21,7 @@ var utils = {
       if (type === 'remove') {
         var index = app.state.canvas.elements.indexOf(state);
         app.state.canvas.elements.splice(index, 1);
+        app.state.canvas.total -= 1;
       } else if (type === 'add') {
         app.addToState(state);
       } else if (type === 'update') {
