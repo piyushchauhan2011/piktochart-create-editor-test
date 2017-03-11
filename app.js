@@ -5,64 +5,6 @@ var fileInput = document.getElementsByName('upload')[0];
 var imageUpload = document.getElementById('submit');
 var blockEl = document.getElementsByClassName('block')[0];
 
-function startDrag(e) {
-  // determine event object
-  if (!e) {
-    var e = window.event;
-  }
-  if (e.preventDefault) e.preventDefault();
-
-  // IE uses srcElement, others use target
-  targ = e.target ? e.target : e.srcElement;
-
-  if (targ.className != 'dragme') {
-    return
-  };
-  // calculate event X, Y coordinates
-  offsetX = e.clientX;
-  offsetY = e.clientY;
-
-  // assign default values for top and left properties
-  if (!targ.style.left) {
-    targ.style.left = '0px'
-  };
-  if (!targ.style.top) {
-    targ.style.top = '0px'
-  };
-
-  // calculate integer values for top and left 
-  // properties
-  coordX = parseInt(targ.style.left);
-  coordY = parseInt(targ.style.top);
-  drag = true;
-
-  // move div element
-  document.onmousemove = dragDiv;
-  return false;
-}
-
-function dragDiv(e) {
-  if (!drag) {
-    return
-  };
-  if (!e) {
-    var e = window.event
-  };
-  // var targ=e.target?e.target:e.srcElement;
-  // move div element
-  targ.style.left = coordX + e.clientX - offsetX + 'px';
-  targ.style.top = coordY + e.clientY - offsetY + 'px';
-  return false;
-}
-
-function stopDrag() {
-  drag = false;
-}
-window.onload = function () {
-  document.onmousedown = startDrag;
-  document.onmouseup = stopDrag;
-}
-
 imageUpload.addEventListener('click', function (e) {
   var formData = new FormData();
   var file = fileInput.files[0];
@@ -114,15 +56,49 @@ function renderImage(image) {
   img.classList.add('img-rounded');
 
   img.addEventListener('click', function (e) {
-    var blockImgEl = createImage(e.target.src);
-    blockImgEl.style.position = 'absolute';
-    blockImgEl.className = 'dragme';
+    // var blockImgEl = createImage(e.target.src);
+    var blockImgEl = createClosableImgDiv(e.target.src);
+    blockImgEl.style.position = 'relative';
+    // blockImgEl.style.boxShadow = '0 0 5px #cacaca';
+    // blockImgEl.style.padding = '1em';
+    // blockImgEl.style.background = '#fafafa';
+
+    // targ.style.left = coordX + e.clientX - offsetX + 'px';
+    // targ.style.top = coordY + e.clientY - offsetY + 'px';
 
     blockEl.appendChild(blockImgEl);
   });
 
   li.appendChild(img);
   allImages.appendChild(li);
+}
+
+function createClosableImgDiv(image) {
+  var cspan = document.createElement('div');
+  cspan.style.display = 'inline-block';
+
+  var cbutton = document.createElement('a');
+  cbutton.text = 'x';
+  cbutton.style.position = 'absolute';
+  cbutton.style.top = '0';
+  cbutton.style.right = '0';
+  cbutton.style.border = '1px solid rgb(250, 250, 250)';
+  cbutton.style.textAlign = 'center';
+  cbutton.style.padding = '0.25em 1em';
+  cbutton.style.background = '#767676';
+  cbutton.style.color = '#fafafa';
+  cbutton.style.cursor = 'pointer';
+
+  cbutton.addEventListener('click', function() {
+    blockEl.removeChild(cspan);
+  });
+
+  var img = createImage(image);
+
+  cspan.appendChild(cbutton);
+  cspan.appendChild(img);
+
+  return cspan;
 }
 
 function createImage(image) {
