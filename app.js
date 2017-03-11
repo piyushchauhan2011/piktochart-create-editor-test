@@ -41,19 +41,24 @@ addText.addEventListener('click', function (e) {
 imageUpload.addEventListener('click', function (e) {
   var formData = new FormData();
   var file = fileInput.files[0];
-  // Check the file type.
-  if (file.type.match('image/*')) {
-    // Add the file to the request.
-    formData.append('upload', file, file.name);
-  }
-  unfetch('/uploads', {
-    method: 'POST',
-    body: formData
-  }).then(function (r) {
-    if (r.status === 200) {
-      refreshImages();
+  if (file) {
+    // Check the file type.
+    if (file.type.match('image/*')) {
+      // Add the file to the request.
+      formData.append('upload', file, file.name);
     }
-  });
+    unfetch('/uploads', {
+      method: 'POST',
+      body: formData
+    }).then(function (r) {
+      if (r.status === 200) {
+        fileInput.value = '';
+        refreshImages();
+      }
+    });
+  } else {
+    alert('Choose a file');
+  }
 });
 
 function refreshImages() {
