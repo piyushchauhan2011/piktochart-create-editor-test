@@ -2,28 +2,12 @@
   'use strict';
 
   var utils = {
-    dragMoveListener: function(event) {
-      var target = event.target,
-        // keep the dragged position in the data-x/data-y attributes
-        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-      // translate the element
-      target.style.webkitTransform =
-        target.style.transform =
-        'translate(' + x + 'px, ' + y + 'px)';
-
-      // update the posiion attributes
-      target.setAttribute('data-x', x);
-      target.setAttribute('data-y', y);
-    },
-
     createImg: function(src) {
       var img = document.createElement('img');
       img.src = src;
       return img;
     },
-    
+
     createCloseBtn: function(txt) {
       var cbutton = document.createElement('a');
       cbutton.text = txt;
@@ -73,39 +57,6 @@
       return cspan;
     },
 
-    // makeDraggable: function(el) {
-      // var drag = false;
-      // var mouseup = Rx.Observable.fromEvent(closableDiv, 'mouseup');
-      // var mouseout = Rx.Observable.fromEvent(closableDiv, 'mouseout');
-      // var mousemove = Rx.Observable.fromEvent(closableDiv, 'mousemove');
-      // var mousedown = Rx.Observable.fromEvent(closableDiv, 'mousedown');
-
-      // mouseup.subscribe(function() { drag = false; });
-      // mouseout.subscribe(function() { drag = false; });
-
-      // var mousedrag = mousedown.flatMap(function(md) {
-      //   drag = true;
-      //   var startX = md.clientX + window.scrollX,
-      //     startY = md.clientY + window.scrollY,
-      //     startLeft = parseInt(closableDiv.style.left, 10) || 0,
-      //     startTop = parseInt(closableDiv.style.top, 10) || 0;
-        
-      //   return mousemove.map(function(mm) {
-      //     mm.preventDefault();
-
-      //     return {
-      //       left: startLeft + mm.clientX - startX,
-      //       top: startTop + mm.clientY - startY
-      //     };
-      //   }).takeWhile(function() { return drag; });
-      // });
-
-      // var subscription = mousedrag.subscribe(function(pos) {
-      //   closableDiv.style.top = pos.top + 'px';
-      //   closableDiv.style.left = pos.left + 'px';
-      // });
-    // },
-
     createInteractDiv: function(el) {
       var closableDiv = utils.createClosableDiv(el);
       closableDiv.style.position = 'absolute';
@@ -138,7 +89,56 @@
         });
 
       return closableDiv;
-    }
+    },
+
+    dragMoveListener: function(event) {
+      var target = event.target,
+        // keep the dragged position in the data-x/data-y attributes
+        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+      // translate the element
+      target.style.webkitTransform =
+        target.style.transform =
+        'translate(' + x + 'px, ' + y + 'px)';
+
+      // update the posiion attributes
+      target.setAttribute('data-x', x);
+      target.setAttribute('data-y', y);
+    },
+
+    // makeDraggable: function(el) {
+      // var drag = false;
+      // var mouseup = Rx.Observable.fromEvent(closableDiv, 'mouseup');
+      // var mouseout = Rx.Observable.fromEvent(closableDiv, 'mouseout');
+      // var mousemove = Rx.Observable.fromEvent(closableDiv, 'mousemove');
+      // var mousedown = Rx.Observable.fromEvent(closableDiv, 'mousedown');
+
+      // mouseup.subscribe(function() { drag = false; });
+      // mouseout.subscribe(function() { drag = false; });
+
+      // var mousedrag = mousedown.flatMap(function(md) {
+      //   drag = true;
+      //   var startX = md.clientX + window.scrollX,
+      //     startY = md.clientY + window.scrollY,
+      //     startLeft = parseInt(closableDiv.style.left, 10) || 0,
+      //     startTop = parseInt(closableDiv.style.top, 10) || 0;
+        
+      //   return mousemove.map(function(mm) {
+      //     mm.preventDefault();
+
+      //     return {
+      //       left: startLeft + mm.clientX - startX,
+      //       top: startTop + mm.clientY - startY
+      //     };
+      //   }).takeWhile(function() { return drag; });
+      // });
+
+      // var subscription = mousedrag.subscribe(function(pos) {
+      //   closableDiv.style.top = pos.top + 'px';
+      //   closableDiv.style.left = pos.left + 'px';
+      // });
+    // }
   };
 
   var app = {
@@ -224,14 +224,16 @@
       img.height = '50';
       img.classList.add('img-rounded');
 
-      img.addEventListener('click', function (e) {
-        var img = utils.createImg(e.target.src);
-        var idiv = utils.createInteractDiv(img);
-        app.blockEl.appendChild(idiv);
-      });
+      img.addEventListener('click', app.addImgToCanvas);
 
       li.appendChild(img);
       allImages.appendChild(li);
+    },
+
+    addImgToCanvas: function(e) {
+      var img = utils.createImg(e.target.src);
+      var idiv = utils.createInteractDiv(img);
+      app.blockEl.appendChild(idiv);
     },
 
     exportFn: function(e) {
