@@ -16,17 +16,19 @@ var utils = {
     return img;
   },
 
-  callbackFn: function(state) {
+  callbackFn: function(state, value) {
     return function(type, x, y) {
       if (type === 'remove') {
-        var index = app.state.canvas.elements.indexOf(state);
-        app.state.canvas.elements.splice(index, 1);
-        app.state.canvas.total -= 1;
+        var index = state.canvas.elements.indexOf(value);
+        state.canvas.elements.splice(index, 1);
+        state.canvas.total -= 1;
       } else if (type === 'add') {
-        app.addToState(state);
+        state.canvas.total += 1;
+        value.id = state.canvas.total;
+        state.canvas.elements.push(value);
       } else if (type === 'update') {
-        state.x = x;
-        state.y = y;
+        value.x = x;
+        value.y = y;
       }
     }
   },
@@ -190,12 +192,6 @@ var app = {
     }
   },
 
-  addToState(elState) {
-    app.state.canvas.total += 1;
-    elState.id = app.state.canvas.total;
-    app.state.canvas.elements.push(elState);
-  },
-
   run: function () {
     app.exportEl.addEventListener('click', app.exportFn);
     app.addText.addEventListener('click', app.addTextFn);
@@ -214,7 +210,7 @@ var app = {
       app.state = data;
       var canvas = data.canvas;
       canvas.elements.forEach(function(el) {
-        var cb = utils.callbackFn(el);
+        var cb = utils.callbackFn(app.state, el);
         if (el.type === 'image') {
           // create image node
           var img = utils.createImg(el.value);
@@ -264,7 +260,7 @@ var app = {
         y: "0"
       };
 
-      var cb = utils.callbackFn(elState);
+      var cb = utils.callbackFn(app.state, elState);
       var txtEl = utils.createTxt(txt);
       var idiv = utils.createInteractDiv(txtEl, cb);
       app.blockEl.appendChild(idiv);
@@ -280,7 +276,7 @@ var app = {
       y: "0"
     };
 
-    var cb = utils.callbackFn(elState);
+    var cb = utils.callbackFn(app.state, elState);
     var img = utils.createImg(e.target.src);
     var idiv = utils.createInteractDiv(img, cb);
     app.blockEl.appendChild(idiv);
