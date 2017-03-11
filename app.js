@@ -73,10 +73,7 @@
       return cspan;
     },
 
-    createInteractDiv: function(el) {
-      var closableDiv = utils.createClosableDiv(el);
-      closableDiv.style.position = 'absolute';
-
+    // makeDraggable: function(el) {
       // var drag = false;
       // var mouseup = Rx.Observable.fromEvent(closableDiv, 'mouseup');
       // var mouseout = Rx.Observable.fromEvent(closableDiv, 'mouseout');
@@ -107,6 +104,13 @@
       //   closableDiv.style.top = pos.top + 'px';
       //   closableDiv.style.left = pos.left + 'px';
       // });
+    // },
+
+    createInteractDiv: function(el) {
+      var closableDiv = utils.createClosableDiv(el);
+      closableDiv.style.position = 'absolute';
+
+      // utils.makeDraggable(closableDiv);
 
       // target elements with the "draggable" class
       interact(closableDiv)
