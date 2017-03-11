@@ -17,9 +17,16 @@ var utils = {
   },
 
   callbackFn: function(state) {
-    return function(x, y) {
-      state.x = x;
-      state.y = y;
+    return function(type, x, y) {
+      if (type === 'remove') {
+        var index = app.state.canvas.elements.indexOf(state);
+        app.state.canvas.elements.splice(index, 1);
+      } else if (type === 'add') {
+        app.addToState(state);
+      } else if (type === 'update') {
+        state.x = x;
+        state.y = y;
+      }
     }
   },
 
@@ -41,7 +48,7 @@ var utils = {
     return cbutton;
   },
 
-  createClosableDiv: function (el) {
+  createClosableDiv: function (el, cb) {
     var cspan = document.createElement('div');
     cspan.style.display = 'inline-block';
 
@@ -57,6 +64,7 @@ var utils = {
     });
     cbutton.addEventListener('click', function (e) {
       app.blockEl.removeChild(cspan);
+      cb('remove');
     });
 
     el.addEventListener('mouseover', function (e) {
@@ -73,7 +81,7 @@ var utils = {
   },
 
   createInteractDiv: function (el, cb, x, y) {
-    var closableDiv = utils.createClosableDiv(el);
+    var closableDiv = utils.createClosableDiv(el, cb);
     closableDiv.style.position = 'absolute';
 
     if (x) { closableDiv.dataset.x = x; }
@@ -109,7 +117,7 @@ var utils = {
         // call this function on every dragend event
         onend: function (event) {
           var dataset = event.target.dataset;
-          cb(dataset.x, dataset.y);
+          cb('update', dataset.x, dataset.y);
         }
       });
 
@@ -176,8 +184,15 @@ var app = {
 
   state: {
     canvas: {
+      total: 0,
       elements: []
     }
+  },
+
+  addToState(elState) {
+    app.state.canvas.total += 1;
+    elState.id = app.state.canvas.total;
+    app.state.canvas.elements.push(elState);
   },
 
   run: function () {
@@ -241,6 +256,7 @@ var app = {
     var txt = prompt('Please enter text');
     if (txt !== null && txt !== '') {
       var elState = {
+        id: "",
         type: "text",
         value: txt,
         x: "0",
@@ -251,7 +267,7 @@ var app = {
       var txtEl = utils.createTxt(txt);
       var idiv = utils.createInteractDiv(txtEl, cb);
       app.blockEl.appendChild(idiv);
-      app.state.canvas.elements.push(elState);
+      cb('add');
     }
   },
 
@@ -267,7 +283,7 @@ var app = {
     var img = utils.createImg(e.target.src);
     var idiv = utils.createInteractDiv(img, cb);
     app.blockEl.appendChild(idiv);
-    app.state.canvas.elements.push(elState);
+    cb('add');
   },
 
   refreshImgs: function () {
