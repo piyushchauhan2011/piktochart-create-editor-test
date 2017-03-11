@@ -3,7 +3,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
 }
@@ -22,13 +23,23 @@ html, body {
   width: 100%;
 }
 
+hr.clear {
+  clear: both;
+  border: 1px solid #cacaca;
+  display: inline-block;
+  width: 100%;
+  margin-top: 2em;
+}
+
 #assetText {
   font-size: 24px;
 }
 
-.assets .text, .assets .image {
+.assets .text,
+.assets .image {
   margin: 10px 0;
 }
+
 .assets .image ul li {
   width: 50px;
   height: 50px;
@@ -36,6 +47,7 @@ html, body {
   float: left;
   overflow: hidden;
 }
+
 .assets .image ul li img {
   width: 100%;
   height: 100%;
@@ -43,7 +55,8 @@ html, body {
 
 .canvas .block {
   position: relative;
-  min-width: 960px; min-height: 600px;
+  min-width: 960px;
+  min-height: 600px;
   margin: 10px;
   padding: 5px;
   border: 1px solid #ddd;
