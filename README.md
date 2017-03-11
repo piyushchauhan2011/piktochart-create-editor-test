@@ -88,8 +88,30 @@ GET /images
 POST /uploads
 ```
 
+#### run tests
+
+```
+GET /test
+```
+
+#### get app state
+
+```
+GET /state
+```
+
+#### update app state
+
+```
+POST /state
+```
+
 ### Note
 
 _- The name of the file input has to be `upload` as this is what the server will be reading from_
 _- The server only accepts `png` and `jpeg` file format_
 _- You are allowed to edit the server.js file_
+
+
+## Solution
+
