@@ -208,21 +208,24 @@ var app = {
       return r.json();
     }).then(function(data) {
       app.state = data;
-      var canvas = data.canvas;
-      canvas.elements.forEach(function(el) {
-        var cb = utils.callbackFn(app.state, el);
-        if (el.type === 'image') {
-          // create image node
-          var img = utils.createImg(el.value);
-          var idiv = utils.createInteractDiv(img, cb, el.x, el.y);
-          app.blockEl.appendChild(idiv);
-        } else if (el.type === 'text') {
-          // create text node
-          var txt = utils.createTxt(el.value);
-          var idiv = utils.createInteractDiv(txt, cb, el.x, el.y);
-          app.blockEl.appendChild(idiv);
-        }
-      });
+      app.renderState(data.canvas);
+    });
+  },
+
+  renderState: function(canvas) {
+    canvas.elements.forEach(function(el) {
+      var cb = utils.callbackFn(app.state, el);
+      if (el.type === 'image') {
+        // create image node
+        var img = utils.createImg(el.value);
+        var idiv = utils.createInteractDiv(img, cb, el.x, el.y);
+        app.blockEl.appendChild(idiv);
+      } else if (el.type === 'text') {
+        // create text node
+        var txt = utils.createTxt(el.value);
+        var idiv = utils.createInteractDiv(txt, cb, el.x, el.y);
+        app.blockEl.appendChild(idiv);
+      }
     });
   },
 
