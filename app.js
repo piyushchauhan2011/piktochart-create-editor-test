@@ -26,13 +26,13 @@ var blockEl = document.getElementsByClassName('block')[0];
 var addText = document.getElementById('addText');
 var exportEl = document.getElementById('export');
 
-exportEl.addEventListener('click', function(e) {
+exportEl.addEventListener('click', function (e) {
   // html2canvas(blockEl, {
   //   onrendered: function(canvas) {
   //     document.body.appendChild(canvas);
   //   }
   // });
-  
+
   // Add the export logic
   // Export the html in a state format ?
   // Reload the state and add event listeners
@@ -120,36 +120,30 @@ function interactableDiv(el) {
   var closableDiv = createClosableDiv(el);
   closableDiv.style.position = 'absolute';
 
-  // target elements with the "draggable" class
-  interact(closableDiv)
-    .draggable({
-      // enable inertial throwing
-      inertia: false,
-      // keep the element within the area of it's parent
-      restrict: {
-        restriction: 'parent',
-        endOnly: true,
-        elementRect: {
-          top: 0,
-          left: 0,
-          bottom: 1,
-          right: 1
-        }
-      },
-      // enable autoScroll
-      autoScroll: true,
+  var mouseup = Rx.Observable.fromEvent(closableDiv, 'mouseup');
+  var mousemove = Rx.Observable.fromEvent(closableDiv, 'mousemove');
+  var mousedown = Rx.Observable.fromEvent(closableDiv, 'mousedown');
 
-      // call this function on every dragmove event
-      onmove: dragMoveListener,
-      // call this function on every dragend event
-      onend: function (event) {}
-    });
-  // blockImgEl.style.boxShadow = '0 0 5px #cacaca';
-  // blockImgEl.style.padding = '1em';
-  // blockImgEl.style.background = '#fafafa';
+  var mousedrag = mousedown.flatMap(function(md) {
+    var startX = md.clientX + window.scrollX,
+      startY = md.clientY + window.scrollY,
+      startLeft = parseInt(closableDiv.style.left, 10) || 0,
+      startTop = parseInt(closableDiv.style.top, 10) || 0;
+    
+    return mousemove.map(function(mm) {
+      mm.preventDefault();
 
-  // targ.style.left = coordX + e.clientX - offsetX + 'px';
-  // targ.style.top = coordY + e.clientY - offsetY + 'px';
+      return {
+        left: startLeft + mm.clientX - startX,
+        top: startTop + mm.clientY - startY
+      };
+    }).takeUntil(mouseup);
+  });
+
+  var subscription = mousedrag.subscribe(function(pos) {
+    closableDiv.style.top = pos.top + 'px';
+    closableDiv.style.left = pos.left + 'px';
+  });
 
   return closableDiv;
 }
@@ -172,12 +166,12 @@ function createClosableDiv(el) {
   cbutton.style.borderRadius = '50%';
   cbutton.style.display = 'none';
 
-  cbutton.addEventListener('mouseover', function(e) {
+  cbutton.addEventListener('mouseover', function (e) {
     cbutton.style.display = 'block';
     cbutton.style.color = '#a91772';
   });
 
-  cbutton.addEventListener('mouseout', function(e) {
+  cbutton.addEventListener('mouseout', function (e) {
     cbutton.style.display = 'none';
     cbutton.style.color = '#aaa';
   });
@@ -185,10 +179,10 @@ function createClosableDiv(el) {
     blockEl.removeChild(cspan);
   });
 
-  el.addEventListener('mouseover', function(e) {
+  el.addEventListener('mouseover', function (e) {
     cbutton.style.display = 'block';
   });
-  el.addEventListener('mouseout', function(e) {
+  el.addEventListener('mouseout', function (e) {
     cbutton.style.display = 'none';
   });
 
